@@ -144,11 +144,7 @@ vercel --prod
 
 2. Add webhook endpoint: `https://your-api.railway.app/api/stripe/webhook`
 
-## 📸 Screenshots
 
-| Compare View | History | Analytics |
-|---|---|---|
-| ![compare](https://via.placeholder.com/300x200) | ![history](https://via.placeholder.com/300x200) | ![analytics](https://via.placeholder.com/300x200) |
 
 ## 🤝 Contributing
 
