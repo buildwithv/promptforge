@@ -2,7 +2,10 @@
 
 > Compare GPT-4, Claude, and Gemini side-by-side. Save prompts. Track history. Built for developers and teams.
 
-![PromptForge Banner](https://via.placeholder.com/1200x400/0a0a0a/00ff88?text=PromptForge+AI+SaaS)
+<img width="1350" height="627" alt="image" src="https://github.com/user-attachments/assets/f9e3aca5-9ac3-4359-9ab0-2561af9bf81a" />
+<img width="1360" height="623" alt="image" src="https://github.com/user-attachments/assets/d1c0176d-503e-4a83-8608-e5b6cb41f832" />
+
+
 
 ## 🚀 Features
 
