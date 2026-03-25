@@ -1,0 +1,124 @@
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(cuid())
+  clerkId     String   @unique
+  email       String   @unique
+  plan        Plan     @default(FREE)
+  stripeCustomerId String? @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  prompts     Prompt[]
+  collections Collection[]
+  usage       Usage[]
+
+  @@map("users")
+}
+
+enum Plan {
+  FREE
+  PRO
+  TEAM
+}
+
+model Prompt {
+  id           String   @id @default(cuid())
+  userId       String
+  title        String?
+  content      String   @db.Text
+  systemPrompt String?  @db.Text
+  tags         String[]
+  isPublic     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  results      Result[]
+  versions     PromptVersion[]
+  collectionItems CollectionItem[]
+
+  @@map("prompts")
+}
+
+model PromptVersion {
+  id        String   @id @default(cuid())
+  promptId  String
+  version   Int
+  content   String   @db.Text
+  systemPrompt String? @db.Text
+  note      String?
+  createdAt DateTime @default(now())
+
+  prompt    Prompt   @relation(fields: [promptId], references: [id], onDelete: Cascade)
+
+  @@unique([promptId, version])
+  @@map("prompt_versions")
+}
+
+model Result {
+  id        String   @id @default(cuid())
+  promptId  String
+  modelId   String
+  content   String   @db.Text
+  tokens    Int
+  latency   Int      // milliseconds
+  cost      Float?
+  error     String?
+  createdAt DateTime @default(now())
+
+  prompt    Prompt   @relation(fields: [promptId], references: [id], onDelete: Cascade)
+
+  @@map("results")
+}
+
+model Collection {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  description String?
+  isPublic    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items       CollectionItem[]
+
+  @@map("collections")
+}
+
+model CollectionItem {
+  id           String     @id @default(cuid())
+  collectionId String
+  promptId     String
+  addedAt      DateTime   @default(now())
+
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  prompt       Prompt     @relation(fields: [promptId], references: [id], onDelete: Cascade)
+
+  @@unique([collectionId, promptId])
+  @@map("collection_items")
+}
+
+model Usage {
+  id        String   @id @default(cuid())
+  userId    String
+  modelId   String
+  tokens    Int
+  cost      Float
+  date      DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+  @@map("usage")
+}
